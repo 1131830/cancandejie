@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>project</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft Yahei", sans-serif;
+            overflow: hidden;
+            /* 保留背景渐变动画 */
+            background: linear-gradient(120deg, #fce4ec, #f3e5f5, #e8f5e9);
+            background-size: 400% 400%;
+            animation: bgGradient 15s ease infinite;
+        }
+        @keyframes bgGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .popup {
+            position: fixed;
+            /* 缩小弹窗内边距 */
+            padding: 18px 24px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            text-align: left;
+            animation: fadeIn 0.8s ease-out, float 6s ease-in-out infinite;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            word-break: break-all;
+        }
+        /* 保留浮动动画 */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+        .popup .prefix {
+            font-weight: bold;
+            /* 缩小前缀文字 */
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #ffe6ec;
+        }
+        .popup .content {
+            /* 缩小主题文字 */
+            font-size: 15px;
+        }
+        @keyframes fadeIn {
+            from {
+                transform: scale(0.3) rotate(-5deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) rotate(0);
+                opacity: 1;
+            }
+        }
+        .popup:hover {
+            transform: scale(1.08) rotate(1deg);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .popup-close {
+            animation: fadeOut 0.3s ease-in;
+        }
+        @keyframes fadeOut {
+            from {
+                transform: scale(1);
+                opacity: 1;
+            }
+            to {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="popup-container"></div>
+
+    <script>
+        const popupContainer = document.getElementById('popup-container');
+        const prefix = "灿姐"; // 可自定义前缀
+        const contents = [
+            '天天开心',
+            '每天元气满满',
+            '保持好心情',
+            '泡泡不调皮',
+            '爱自己',
+            '烦恼都消失',
+            
+        ];
+        const maxPopupCount = 30;
+
+        function generatePopup() {
+            const randomContent = contents[Math.floor(Math.random() * contents.length)];
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            
+            const prefixEl = document.createElement('div');
+            prefixEl.className = 'prefix';
+            prefixEl.textContent = prefix;
+
+            const contentEl = document.createElement('div');
+            contentEl.className = 'content';
+            contentEl.textContent = randomContent;
+
+            popup.appendChild(prefixEl);
+            popup.appendChild(contentEl);
+
+            // 缩小弹窗尺寸范围（关键调整：宽度、高度均减小）
+            const top = Math.random() * 75 + 'vh';
+            const left = Math.random() * 75 + 'vw';
+            const width = Math.random() * 80 + 100 + 'px'; // 原140→100（最小宽度），原240→180（最大宽度）
+            const height = Math.random() * 40 + 60 + 'px'; // 原80→60（最小高度），原140→100（最大高度）
+            const r = 255;
+            const g = Math.floor(Math.random() * 120 + 100);
+            const b = Math.floor(Math.random() * 120 + 100);
+            const opacity = Math.random() * 0.2 + 0.8;
+            popup.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+            popup.style.top = top;
+            popup.style.left = left;
+            popup.style.width = width;
+            popup.style.height = height;
+
+            popupContainer.appendChild(popup);
+
+            // 点击弹窗消失
+            popup.addEventListener('click', () => {
+                popup.classList.add('popup-close');
+                setTimeout(() => {
+                    popup.remove();
+                }, 300);
+            });
+
+            // 超过最大数量时，移除最旧的弹窗
+            if (popupContainer.children.length > maxPopupCount) {
+                const oldestPopup = popupContainer.children[0];
+                oldestPopup.classList.add('popup-close');
+                setTimeout(() => {
+                    oldestPopup.remove();
+                }, 300);
+            }
+        }
+
+        // 每隔300毫秒生成一个新弹窗
+        setInterval(generatePopup, 250);
+
+        // 页面加载时先生成一批弹窗
+        window.addEventListener('load', () => {
+            for (let i = 0; i < 10; i++) {
+                generatePopup();
+            }
+        });
+    </script>
+</body>
+</html>
